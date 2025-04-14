@@ -5,9 +5,16 @@
 #include <time.h>
 #include <math.h>
 
+//FUNCTIONS
 void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screenHeight) {
     *ballPos = (Vector2) { screenWidth / 2.0f, screenHeight / 2.0f };
-    *ballSpeed = (Vector2) {1, 1};
+
+    float speedX = (float)(rand() % 2 + 1);
+    float speedY = (float)(rand() % 2 + 1); 
+    if (rand() % 2 == 0) speedX *= -1; 
+    if (rand() % 2 == 0) speedY *= -1; 
+
+    *ballSpeed = (Vector2) {speedX, speedY};
 };
 
 int main() {
@@ -16,7 +23,7 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "Pong Game");
     SetTargetFPS(120);
-    srand(time(NULL)); // Iniciar gerador de números aleatórios
+    srand(time(NULL));
 
     Vector2 ballPos;
     Vector2 ballSpeed;
@@ -26,32 +33,33 @@ int main() {
 
     Rectangle playerLeft = {50, screenHeight / 2 - 50, 20, 100};
     Rectangle playerRight = {screenWidth - 70, screenHeight / 2 - 50, 20, 100};
-    float speed = 4.0f;
 
     int scoreLeft = 0;
     int scoreRight = 0;
 
-    while (!WindowShouldClose()) {
+while (!WindowShouldClose()) {
+    //INPUTS
+        float deltaTime = GetFrameTime();
         // Jogador esquerdo (W e S)
-        if (IsKeyDown(KEY_W)) playerLeft.y -= speed;
-        if (IsKeyDown(KEY_S)) playerLeft.y += speed;
+        if (IsKeyDown(KEY_W)) playerLeft.y -= 200 * deltaTime;
+        if (IsKeyDown(KEY_S)) playerLeft.y +=  200 * deltaTime;
 
         if (playerLeft.y < 0) playerLeft.y = 0;
         if (playerLeft.y + playerLeft.height > screenHeight) 
             playerLeft.y = screenHeight - playerLeft.height;
 
         // Jogador direito (setas)
-        if (IsKeyDown(KEY_UP)) playerRight.y -= speed;
-        if (IsKeyDown(KEY_DOWN)) playerRight.y += speed;
+        if (IsKeyDown(KEY_UP)) playerRight.y -=  200 * deltaTime;
+        if (IsKeyDown(KEY_DOWN)) playerRight.y +=  200 * deltaTime;
 
         if (playerRight.y < 0) playerRight.y = 0;
         if (playerRight.y + playerRight.height > screenHeight) 
             playerRight.y = screenHeight - playerRight.height;
 
-        // Atualiza posição da bola
+        //UPDATE
         ballPos.x += ballSpeed.x;
         ballPos.y += ballSpeed.y;
-
+        //COLISSION
         // Rebater nas bordas superior/inferior
         if (ballPos.y <= radius || ballPos.y >= screenHeight - radius) ballSpeed.y *= -1;
 
@@ -79,7 +87,7 @@ int main() {
             ballPos.x = playerRight.x - radius; // evita travar
         }
 
-        //Pontuação
+        //POINTS
         if (ballPos.x < 0)
         {
             scoreRight++;
@@ -90,7 +98,7 @@ int main() {
            resetBall(&ballPos, &ballSpeed, screenWidth, screenHeight);
         }
 
-        // Desenhar tudo
+        //DRAW
         BeginDrawing();
         ClearBackground(BLACK);
 
