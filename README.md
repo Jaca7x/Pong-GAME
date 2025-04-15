@@ -1,4 +1,4 @@
-<div width = "800">![Pong-game](Pong-game/resources/giphy.gif)</div>
+<div><img src="Pong-game/resouces/giphy.gif" alt="Pong-game" width = "800"></div>
 
 # Basic Pong game
 
