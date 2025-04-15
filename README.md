@@ -1,4 +1,4 @@
-<img src="Pong-game/resources/giphy.gif" alt="Pong-game" width="500"/>
+<img src="Pong-game/resources/giphy.gif" alt="Pong-game" width="800"/>
 
 # Basic Pong game
 
