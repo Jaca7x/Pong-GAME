@@ -1,4 +1,4 @@
-![Pong-game](../Pong-game/resources/giphy.gif)
+![Pong-game](Pong-game/resources/giphy.gif)
 
 # Basic Pong game
 
