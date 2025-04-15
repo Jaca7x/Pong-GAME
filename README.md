@@ -24,19 +24,19 @@
 
 <table>
   <tr>
-    <td><img src="resources/Raylib_logo.png" alt="Raylib-logo" width="600"/></td>
+    <td><img src="Pong-game/resources/Raylib_logo.png" alt="Raylib-logo" width="600"/></td>
     <td>
       <strong>Raylib</strong> is a simple and easy-to-use library to learn game programming. It is written in C and great for building 2D/3D games, especially for beginners.
     </td>
   </tr>
   <tr>
-    <td><img src="resources/25699522.png" alt="C-logo" width="400"/></td>
+    <td><img src="Pong-game/resources/25699522.png" alt="C-logo" width="400"/></td>
     <td>
        <strong>C</strong> is a powerful and efficient programming language. It is widely used for system-level development, embedded systems, and game engines.Learning C helps build a solid foundation in logic, memory management, and performance-focused code.
     </td>
   </tr>
   <tr>
-    <td><img src="resources/ChatGPT-Logo.svg.png" alt="ChatGPT Logo" width="400"/></td>
+    <td><img src="Pong-game/resources/ChatGPT-Logo.svg.png" alt="ChatGPT Logo" width="400"/></td>
     <td>
       <strong>ChatGPT</strong> was used as a learning assistant throughout this project.
       It helped with understanding C syntax, getting code suggestions, fixing bugs, and learning how to use the Raylib library.
