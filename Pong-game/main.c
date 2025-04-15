@@ -71,7 +71,7 @@ int main()
 {
     const int screenWidth = 800;
     const int screenHeight = 600;
-    const int winScore = 2; // PONTOS NECESSÁRIOS PRA UM PLAYER GANHAR
+    const int winScore = 10; // PONTOS NECESSÁRIOS PRA UM PLAYER GANHAR
 
     InitWindow(screenWidth, screenHeight, "Pong Game");
     SetTargetFPS(120);
