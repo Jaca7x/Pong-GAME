@@ -4,20 +4,68 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 
-//FUNCTIONS
-void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screenHeight) {
-    *ballPos = (Vector2) { screenWidth / 2.0f, screenHeight / 2.0f };
+// FUNCTIONS
+void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screenHeight)
+{
+    *ballPos = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
 
     float speedX = (float)(rand() % 2 + 1);
-    float speedY = (float)(rand() % 2 + 1); 
-    if (rand() % 2 == 0) speedX *= -1; 
-    if (rand() % 2 == 0) speedY *= -1; 
+    float speedY = (float)(rand() % 2 + 1);
+    if (rand() % 2 == 0)
+        speedX *= -1;
+    if (rand() % 2 == 0)
+        speedY *= -1;
 
-    *ballSpeed = (Vector2) {speedX, speedY};
+    *ballSpeed = (Vector2){speedX, speedY};
 };
 
-int main() {
+void endGame()
+{
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawText("Jogo encerrado! Aperte ESC para sair", 100, 200, 30, WHITE);
+        EndDrawing();
+        if (IsKeyDown(KEY_ESCAPE))
+            break;
+    }
+    CloseWindow();
+    exit(0);
+};
+
+void winRight(int screenWidth)
+{
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        int textWidth = MeasureText("DIREITA GANHOU", 40);
+        DrawText("DIREITA GANHOU", (screenWidth - textWidth) / 2, 200, 40, GOLD);
+        EndDrawing();
+        sleep(2); // 2 segundos
+        endGame();
+    }
+};
+
+void winLeft(int screenWidth)
+{
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        int textWidth = MeasureText("ESQUERDA GANHOU", 40);
+        DrawText("ESQUERDA GANHOU", (screenWidth - textWidth) / 2, 200, 40, GOLD);
+        EndDrawing();
+        sleep(2); // 2 segundos
+        endGame();
+    }
+};
+
+int main()
+{
     const int screenWidth = 800;
     const int screenHeight = 600;
 
@@ -37,68 +85,92 @@ int main() {
     int scoreLeft = 0;
     int scoreRight = 0;
 
-while (!WindowShouldClose()) {
-    //INPUTS
+    while (!WindowShouldClose())
+    {
+        // INPUTS
         float deltaTime = GetFrameTime();
         // Jogador esquerdo (W e S)
-        if (IsKeyDown(KEY_W)) playerLeft.y -= 200 * deltaTime;
-        if (IsKeyDown(KEY_S)) playerLeft.y +=  200 * deltaTime;
+        if (IsKeyDown(KEY_W))
+            playerLeft.y -= 200 * deltaTime;
+        if (IsKeyDown(KEY_S))
+            playerLeft.y += 200 * deltaTime;
 
-        if (playerLeft.y < 0) playerLeft.y = 0;
-        if (playerLeft.y + playerLeft.height > screenHeight) 
+        if (playerLeft.y < 0)
+            playerLeft.y = 0;
+        if (playerLeft.y + playerLeft.height > screenHeight)
             playerLeft.y = screenHeight - playerLeft.height;
 
         // Jogador direito (setas)
-        if (IsKeyDown(KEY_UP)) playerRight.y -=  200 * deltaTime;
-        if (IsKeyDown(KEY_DOWN)) playerRight.y +=  200 * deltaTime;
+        if (IsKeyDown(KEY_UP))
+            playerRight.y -= 200 * deltaTime;
+        if (IsKeyDown(KEY_DOWN))
+            playerRight.y += 200 * deltaTime;
 
-        if (playerRight.y < 0) playerRight.y = 0;
-        if (playerRight.y + playerRight.height > screenHeight) 
+        if (playerRight.y < 0)
+            playerRight.y = 0;
+        if (playerRight.y + playerRight.height > screenHeight)
             playerRight.y = screenHeight - playerRight.height;
 
-        //UPDATE
+        // UPDATE
         ballPos.x += ballSpeed.x;
         ballPos.y += ballSpeed.y;
-        //COLISSION
-        // Rebater nas bordas superior/inferior
-        if (ballPos.y <= radius || ballPos.y >= screenHeight - radius) ballSpeed.y *= -1;
+
+        // COLISSION
+        //  Rebater nas bordas superior/inferior
+        if (ballPos.y <= radius || ballPos.y >= screenHeight - radius)
+            ballSpeed.y *= -1;
 
         // Colisão com jogador esquerdo
-        float closestX1 = Clamp(ballPos.x, playerLeft.x, playerLeft.x + playerLeft.width); 
+        float closestX1 = Clamp(ballPos.x, playerLeft.x, playerLeft.x + playerLeft.width);
         float closestY1 = Clamp(ballPos.y, playerLeft.y, playerLeft.y + playerLeft.height);
         float dx1 = ballPos.x - closestX1;
         float dy1 = ballPos.y - closestY1;
 
-        if ((dx1 * dx1 + dy1 * dy1) < (radius * radius)) {
+        if ((dx1 * dx1 + dy1 * dy1) < (radius * radius))
+        {
             ballSpeed.x *= -1;
-            ballSpeed.x *= 1.1f; 
+            ballSpeed.x *= 1.1f;
             ballPos.x = playerLeft.x + playerLeft.width + radius; // evita travar
         }
 
-        // Colisão com jogador direito 
+        // Colisão com jogador direito
         float closestX2 = Clamp(ballPos.x, playerRight.x, playerRight.x + playerRight.width);
         float closestY2 = Clamp(ballPos.y, playerRight.y, playerRight.y + playerRight.height);
         float dx2 = ballPos.x - closestX2;
         float dy2 = ballPos.y - closestY2;
 
-        if ((dx2 * dx2 + dy2 * dy2) < (radius * radius)) {
+        if ((dx2 * dx2 + dy2 * dy2) < (radius * radius))
+        {
             ballSpeed.x *= -1;
-            ballSpeed.x *= 1.1f; 
+            ballSpeed.x *= 1.1f;
             ballPos.x = playerRight.x - radius; // evita travar
         }
 
-        //POINTS
+        // POINTS
         if (ballPos.x < 0)
         {
             scoreRight++;
             resetBall(&ballPos, &ballSpeed, screenWidth, screenHeight);
-        } else if (ballPos.x > screenWidth)
+        }
+        else if (ballPos.x > screenWidth)
         {
-           scoreLeft++;
-           resetBall(&ballPos, &ballSpeed, screenWidth, screenHeight);
+            scoreLeft++;
+            resetBall(&ballPos, &ballSpeed, screenWidth, screenHeight);
         }
 
-        //DRAW
+        // SISTEMA VÍTORIA
+        if (scoreLeft == 10)
+        {
+            winLeft(screenWidth);
+            endGame();
+        }
+        else if (scoreRight == 10)
+        {
+            winRight(screenWidth);
+            endGame();
+        }
+
+        // DRAW
         BeginDrawing();
         ClearBackground(BLACK);
 
@@ -108,7 +180,7 @@ while (!WindowShouldClose()) {
 
         DrawText(TextFormat("%d", scoreLeft), screenWidth / 4, 20, 40, WHITE);
         DrawText(TextFormat("%d", scoreRight), screenWidth * 3 / 4, 20, 40, WHITE);
-        
+
         DrawFPS(10, 10);
         EndDrawing();
     }
