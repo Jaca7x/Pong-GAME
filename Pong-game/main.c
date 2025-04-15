@@ -1,20 +1,20 @@
-//BIBLIOTECAS RAYLIB
+// BIBLIOTECAS RAYLIB
 #include "raylib.h"
 #include "raymath.h"
 
-//BIBLIOTECAS BÁSICAS
+// BIBLIOTECAS BÁSICAS
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
 
 // FUNCTIONS
-void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screenHeight) //Resetar bola pós 1 ponto
+void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screenHeight) // Resetar bola pós 1 ponto
 {
     *ballPos = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
 
-    float speedX = (float)(rand() % 2 + 1);
-    float speedY = (float)(rand() % 2 + 1);
+    float speedX = (float)(rand() % 3 + 1);
+    float speedY = (float)(rand() % 3 + 1);
     if (rand() % 2 == 0)
         speedX *= -1;
     if (rand() % 2 == 0)
@@ -23,7 +23,7 @@ void resetBall(Vector2 *ballPos, Vector2 *ballSpeed, int screenWidth, int screen
     *ballSpeed = (Vector2){speedX, speedY};
 };
 
-void endGame() //Encerrar jogo
+void endGame() // Encerrar jogo
 {
     while (!WindowShouldClose())
     {
@@ -31,41 +31,42 @@ void endGame() //Encerrar jogo
         ClearBackground(BLACK);
         DrawText("Jogo encerrado! Aperte ESC para sair", 100, 200, 30, WHITE);
         EndDrawing();
-        if (IsKeyDown(KEY_ESCAPE)) break;
+        if (IsKeyDown(KEY_ESCAPE))
+            break;
     }
     CloseWindow();
     exit(0);
 };
 
-void winRight(int screenWidth) //Vitoria DIREITA
+void winRight(int screenWidth) // Vitoria DIREITA
 {
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(BLACK);
-        int textWidth = MeasureText("DIREITA GANHOU", 40);
-        DrawText("DIREITA GANHOU", (screenWidth - textWidth) / 2, 200, 40, GOLD);
+        int textWidth = MeasureText("DIREITA GANHOU COM 10 PONTOS", 30);
+        DrawText("DIREITA GANHOU COM 10 PONTOS", (screenWidth - textWidth) / 2, 200, 30, GOLD);
         EndDrawing();
         sleep(2); // 2 segundos
         endGame();
     }
 };
 
-void winLeft(int screenWidth) //Vitoria ESQUERDA
+void winLeft(int screenWidth) // Vitoria ESQUERDA
 {
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(BLACK);
-        int textWidth = MeasureText("ESQUERDA GANHOU", 40);
-        DrawText("ESQUERDA GANHOU", (screenWidth - textWidth) / 2, 200, 40, GOLD);
+        int textWidth = MeasureText("ESQUERDA GANHOU COM 10 PONTOS", 30);
+        DrawText("ESQUERDA GANHOU COM 10 PONTOS", (screenWidth - textWidth) / 2, 200, 30, GOLD);
         EndDrawing();
         sleep(2); // 2 segundos
         endGame();
     }
 };
 
-//INICIO
+// INICIO
 int main()
 {
     const int screenWidth = 800;
@@ -87,15 +88,30 @@ int main()
     int scoreLeft = 0;
     int scoreRight = 0;
 
+    bool gameStart = false;
+
     while (!WindowShouldClose())
     {
         // INPUTS
+        if (!gameStart)
+        {
+            if (IsKeyDown(KEY_ENTER))
+            {
+                gameStart = true;
+            }
+        }
+        else
+        {
+            ballPos.x += ballSpeed.x;
+            ballPos.y += ballSpeed.y;
+        }
+
         float deltaTime = GetFrameTime();
         // Jogador esquerdo (W e S)
         if (IsKeyDown(KEY_W))
-            playerLeft.y -= 200 * deltaTime;
+            playerLeft.y -= 400 * deltaTime;
         if (IsKeyDown(KEY_S))
-            playerLeft.y += 200 * deltaTime;
+            playerLeft.y += 400 * deltaTime;
 
         if (playerLeft.y < 0)
             playerLeft.y = 0;
@@ -104,18 +120,14 @@ int main()
 
         // Jogador direito (setas)
         if (IsKeyDown(KEY_UP))
-            playerRight.y -= 200 * deltaTime;
+            playerRight.y -= 400 * deltaTime;
         if (IsKeyDown(KEY_DOWN))
-            playerRight.y += 200 * deltaTime;
+            playerRight.y += 400 * deltaTime;
 
         if (playerRight.y < 0)
             playerRight.y = 0;
         if (playerRight.y + playerRight.height > screenHeight)
             playerRight.y = screenHeight - playerRight.height;
-
-        // UPDATE
-        ballPos.x += ballSpeed.x;
-        ballPos.y += ballSpeed.y;
 
         // COLISSION
         //  Rebater nas bordas superior/inferior
@@ -184,18 +196,24 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
 
-        //DESENHA ELEMENTOS BÁSICOS
-        DrawCircleV(ballPos, radius, WHITE);
-        DrawRectangleRec(playerLeft, WHITE);
-        DrawRectangleRec(playerRight, WHITE);
+        if (!gameStart)
+        {
+            DrawText("Pressione ENTER para começar", screenWidth / 2 - 250, screenHeight / 2, 30, GOLD);
+        }
+        else
+        {
+            // DESENHA ELEMENTOS BÁSICOS
+            DrawCircleV(ballPos, radius, WHITE);
+            DrawRectangleRec(playerLeft, WHITE);
+            DrawRectangleRec(playerRight, WHITE);
 
-        //DESENHA OS CONTADORES DE PONTOS
-        DrawText(TextFormat("%d", scoreLeft), screenWidth / 4, 20, 40, WHITE);
-        DrawText(TextFormat("%d", scoreRight), screenWidth * 3 / 4, 20, 40, WHITE);
+            // DESENHA OS CONTADORES DE PONTOS
+            DrawText(TextFormat("%d", scoreLeft), screenWidth / 4, 20, 40, WHITE);
+            DrawText(TextFormat("%d", scoreRight), screenWidth * 3 / 4, 20, 40, WHITE);
 
-        //DESENHA O FPS
-        DrawFPS(10, 10);
-
+            // DESENHA O FPS
+            DrawFPS(10, 10);
+        }
         EndDrawing();
     }
 
