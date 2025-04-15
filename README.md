@@ -1,4 +1,4 @@
-![Pong-game](Pong-game/resources/giphy.gif)
+<div width = "800">![Pong-game](Pong-game/resources/giphy.gif)</div>
 
 # Basic Pong game
 
