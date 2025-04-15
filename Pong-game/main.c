@@ -71,7 +71,7 @@ int main()
 {
     const int screenWidth = 800;
     const int screenHeight = 600;
-    const int winScore = 10; // PONTOS NECESSÁRIOS PRA UM PLAYER GANHAR
+    const int winScore = 10;
 
     InitWindow(screenWidth, screenHeight, "Pong Game");
     SetTargetFPS(120);
@@ -150,7 +150,7 @@ int main()
         if ((dx1 * dx1 + dy1 * dy1) < (radius * radius))
         {
             ballSpeed.x *= -1;                                    // Inverte a direção da bola no eixo X
-            ballSpeed.x *= ballSpeedGain;                                  // Aumenta um pouco a velocidade da bola
+            ballSpeed.x *= ballSpeedGain;                         // Aumenta um pouco a velocidade da bola
             ballPos.x = playerLeft.x + playerLeft.width + radius; // Reposiciona para fora do jogador para evitar travamento
         }
 
@@ -167,7 +167,7 @@ int main()
         if ((dx2 * dx2 + dy2 * dy2) < (radius * radius))
         {
             ballSpeed.x *= -1;                  // Inverte a direção da bola no eixo X
-            ballSpeed.x *= ballSpeedGain;                // Aumenta um pouco a velocidade da bola
+            ballSpeed.x *= 1.1f;                // Aumenta um pouco a velocidade da bola
             ballPos.x = playerRight.x - radius; // Reposiciona para fora do jogador para evitar travamento
         }
 
