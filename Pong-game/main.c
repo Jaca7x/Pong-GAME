@@ -71,6 +71,7 @@ int main()
 {
     const int screenWidth = 800;
     const int screenHeight = 600;
+    const int winScore = 10; // PONTOS NECESSÁRIOS PRA UM PLAYER GANHAR
 
     InitWindow(screenWidth, screenHeight, "Pong Game");
     SetTargetFPS(120);
@@ -79,11 +80,13 @@ int main()
     Vector2 ballPos;
     Vector2 ballSpeed;
     const float radius = 10.0f;
+    const float ballSpeedGain = 1.1f; // GANHO DE VELOCIDADE APÓS CADA COLISÃO
 
     resetBall(&ballPos, &ballSpeed, screenWidth, screenHeight);
 
     Rectangle playerLeft = {50, screenHeight / 2 - 50, 20, 100};
     Rectangle playerRight = {screenWidth - 70, screenHeight / 2 - 50, 20, 100};
+    const int playerSpeed = 400;
 
     int scoreLeft = 0;
     int scoreRight = 0;
@@ -109,9 +112,9 @@ int main()
         float deltaTime = GetFrameTime();
         // Jogador esquerdo (W e S)
         if (IsKeyDown(KEY_W))
-            playerLeft.y -= 400 * deltaTime;
+            playerLeft.y -= playerSpeed * deltaTime;
         if (IsKeyDown(KEY_S))
-            playerLeft.y += 400 * deltaTime;
+            playerLeft.y += playerSpeed * deltaTime;
 
         if (playerLeft.y < 0)
             playerLeft.y = 0;
@@ -120,9 +123,9 @@ int main()
 
         // Jogador direito (setas)
         if (IsKeyDown(KEY_UP))
-            playerRight.y -= 400 * deltaTime;
+            playerRight.y -= playerSpeed * deltaTime;
         if (IsKeyDown(KEY_DOWN))
-            playerRight.y += 400 * deltaTime;
+            playerRight.y += playerSpeed * deltaTime;
 
         if (playerRight.y < 0)
             playerRight.y = 0;
@@ -147,7 +150,7 @@ int main()
         if ((dx1 * dx1 + dy1 * dy1) < (radius * radius))
         {
             ballSpeed.x *= -1;                                    // Inverte a direção da bola no eixo X
-            ballSpeed.x *= 1.1f;                                  // Aumenta um pouco a velocidade da bola
+            ballSpeed.x *= ballSpeedGain;                                  // Aumenta um pouco a velocidade da bola
             ballPos.x = playerLeft.x + playerLeft.width + radius; // Reposiciona para fora do jogador para evitar travamento
         }
 
@@ -164,7 +167,7 @@ int main()
         if ((dx2 * dx2 + dy2 * dy2) < (radius * radius))
         {
             ballSpeed.x *= -1;                  // Inverte a direção da bola no eixo X
-            ballSpeed.x *= 1.1f;                // Aumenta um pouco a velocidade da bola
+            ballSpeed.x *= ballSpeedGain;                // Aumenta um pouco a velocidade da bola
             ballPos.x = playerRight.x - radius; // Reposiciona para fora do jogador para evitar travamento
         }
 
@@ -181,12 +184,12 @@ int main()
         }
 
         // SISTEMA VÍTORIA
-        if (scoreLeft == 10)
+        if (scoreLeft == winScore)
         {
             winLeft(screenWidth);
             endGame();
         }
-        else if (scoreRight == 10)
+        else if (scoreRight == winScore)
         {
             winRight(screenWidth);
             endGame();
